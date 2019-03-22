@@ -268,6 +268,7 @@ class BidirectionalAttentionFlow(Model):
         # Compute the EM and F1 on SQuAD and add the tokenized input to the output.
         if metadata is not None:
             output_dict['best_span_str'] = []
+            output_dict['best_span_indices'] = []
             question_tokens = []
             passage_tokens = []
             for i in range(batch_size):
@@ -278,6 +279,7 @@ class BidirectionalAttentionFlow(Model):
                 predicted_span = tuple(best_span[i].detach().cpu().numpy())
                 start_offset = offsets[predicted_span[0]][0]
                 end_offset = offsets[predicted_span[1]][1]
+                output_dict['best_span_indices'].append([start_offset, end_offset])
                 best_span_string = passage_str[start_offset:end_offset]
                 output_dict['best_span_str'].append(best_span_string)
                 answer_texts = metadata[i].get('answer_texts', [])
